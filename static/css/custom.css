@@ -1,0 +1,329 @@
+/* ==========================================================================
+   PALETA HÍBRIDA PREMIUM (SLATE / VS CODE STYLE) - ULTRA CONFORTO VISUAL
+   ========================================================================== */
+:root {
+    --bg-main: #121824;       /* Cinza azulado fosco de fundo (reduz reflexos) */
+    --bg-card: #1c2333;       /* Painéis internos levemente mais claros */
+    --bg-nav: #0b0f17;        /* Barra superior escura */
+    --text-main: #e2e8f0;     /* Texto principal esbranquiçado (não cansa os olhos) */
+    --text-muted: #94a3b8;    /* Textos secundários cinzas */
+    --accent: #38bdf8;        /* Azul Sky para links e destaques */
+    --accent-hover: #0ea5e9;
+    --border-color: #2e3748;  /* Bordas suaves */
+    --danger: #f87171;
+    --success: #34d399;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+}
+
+/* Navbar */
+.navbar-custom {
+    background-color: var(--bg-nav);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.8rem 0;
+}
+.navbar-brand-custom {
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #ffffff !important;
+    font-size: 1.35rem;
+}
+.navbar-brand-custom span { color: var(--accent); }
+
+/* Painéis */
+.card-custom {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    padding: 2.5rem;
+}
+
+/* Botões */
+.btn-accent {
+    background-color: var(--accent);
+    color: #0b0f17 !important;
+    font-weight: 600;
+    border: none;
+    transition: all 0.2s ease;
+}
+.btn-accent:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-1px);
+}
+.btn-outline-custom {
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    background: rgba(255,255,255,0.02);
+    transition: all 0.2s ease;
+}
+.btn-outline-custom:hover {
+    background: var(--border-color);
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   ÁREA DE EDIÇÃO (CORREÇÃO DE TEXTO E CORES CONFORTO)
+   ========================================================================== */
+.EasyMDEContainer {
+    background-color: #0f141c !important; /* Fundo do editor ligeiramente mais escuro que a página */
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+.editor-toolbar {
+    background-color: #1a222f !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+.editor-toolbar button { 
+    color: #cbd5e1 !important;
+}
+.editor-toolbar button:hover, .editor-toolbar button.active {
+    background: #2e3748 !important;
+    color: var(--accent) !important;
+}
+.CodeMirror {
+    background-color: #0f141c !important;
+    color: #e2e8f0 !important; /* Texto digitado cinza claro suave */
+    border: none !important;
+}
+
+/* Correção definitiva de espaçamento de linhas no editor */
+.CodeMirror-line {
+    padding: 1px 8px !important;
+    line-height: 1.5 !important;
+}
+.CodeMirror, .CodeMirror-scroll {
+    font-family: 'Fira Code', ui-monospace, monospace !important;
+    font-size: 0.95rem !important;
+    min-height: 450px !important;
+}
+.CodeMirror pre.CodeMirror-line, 
+.CodeMirror pre.CodeMirror-line-like {
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* Cores das Tags Markdown dentro do Editor (Contraste Suave) */
+.cm-header-1, .cm-header-2, .cm-header-3 { color: #f1f5f9 !important; font-weight: 700 !important; }
+.cm-variable-2 { color: #38bdf8 !important; } /* Cor de listas e links mais amigável */
+.cm-comment { color: #64748b !important; } /* Sintaxe Markdown crua (Ex: # ou *) fica discreta */
+
+/* Painel de Preview Dividido (Side-by-Side) */
+.editor-preview-side, .editor-preview {
+    background-color: #151b26 !important;
+    color: #e2e8f0 !important;
+    padding: 1.8rem !important;
+    border-left: 1px solid var(--border-color) !important;
+}
+
+/* ==========================================================================
+   PÁGINA DE LEITURA / VISUALIZAÇÃO (ESTILO GITHUB OTIMIZADO)
+   ========================================================================== */
+.markdown-body {
+    color: #e2e8f0;
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+    color: #ffffff;
+    margin-top: 1.8rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+.markdown-body h1 { 
+    border-bottom: 1px solid var(--border-color); 
+    padding-bottom: 0.5rem; 
+    font-size: 1.8rem; 
+}
+.markdown-body h2 { font-size: 1.45rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.3rem;}
+.markdown-body p { margin-bottom: 1.2rem; color: #cbd5e1; }
+
+/* Listas na Visualização */
+.markdown-body ul, .markdown-body ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1.2rem;
+    color: #cbd5e1;
+}
+.markdown-body li {
+    margin-bottom: 0.4rem;
+}
+
+/* Tabelas na Visualização */
+.markdown-body table {
+    width: 100%;
+    margin: 1.5rem 0;
+    border-collapse: collapse;
+}
+.markdown-body th, .markdown-body td {
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--border-color);
+}
+.markdown-body th {
+    background-color: #1a222f;
+    color: #ffffff;
+}
+.markdown-body tr:nth-child(even) {
+    background-color: #151b26;
+}
+
+/* Código em Bloco e Citação na Visualização */
+.markdown-body code {
+    background: #242f41;
+    padding: 3px 6px;
+    border-radius: 4px;
+    color: #f472b6;
+    font-family: ui-monospace, monospace;
+    font-size: 0.9em;
+}
+
+/* Torna o bloco de código o container pai para o selo flutuante */
+.markdown-body .highlight {
+    position: relative;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+/* Estilização interna da caixa de código pre */
+.markdown-body pre {
+    background-color: #0b0f17 !important;
+    color: #e2e8f0 !important;
+    padding: 2.5rem 1.2rem 1.2rem 1.2rem !important; /* Aumentamos o padding superior (2.5rem) para dar espaço ao selo */
+    margin-bottom: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    font-family: 'Fira Code', monospace !important;
+}
+
+/* ✨ MÁGICA DO CSS: Cria o selo flutuante capturando a classe ou atributo gerado pelo Pygments */
+.markdown-body .highlight::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    background-color: #1a222f;          /* Cor de fundo da barra do cabeçalho do código */
+    color: var(--text-muted);           /* Cor do texto do selo */
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-family: system-ui, sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;          /* Deixa o nome da linguagem em maiúsculo (PYTHON, SQL...) */
+    border-bottom: 1px solid var(--border-color);
+    letter-spacing: 0.5px;
+    display: flex;
+    justify-content: flex-end;          /* Alinha o texto do selo na direita */
+}
+
+/* 🎣 Ganchos dinâmicos: Se a extensão gerar divs com classes de linguagens, o CSS injeta o texto correto automaticamente */
+.markdown-body .highlight:has(.language-python)::before,
+.markdown-body .highlight:has(.highlight-source-python)::before { content: "🐍 Python"; }
+
+.markdown-body .highlight:has(.language-javascript)::before,
+.markdown-body .highlight:has(.language-js)::before { content: "🟨 JavaScript"; }
+
+.markdown-body .highlight:has(.language-html)::before { content: "🌐 HTML"; }
+
+.markdown-body .highlight:has(.language-css)::before { content: "🎨 CSS"; }
+
+.markdown-body .highlight:has(.language-sql)::before { content: "🗄️ SQL (Banco de Dados)"; }
+
+.markdown-body .highlight:has(.language-bash)::before,
+.markdown-body .highlight:has(.language-sh)::before,
+.markdown-body .highlight:has(.language-terminal)::before { content: "💻 Terminal / Bash"; }
+
+.markdown-body .highlight:has(.language-json)::before { content: "📦 JSON"; }
+
+/* Gancho genérico: caso você use uma linguagem não mapeada acima, ele tenta mostrar o padrão genérico */
+.markdown-body .highlight::before {
+    content: "📄 Código Fonte / Comando";
+}
+
+/* Cores específicas das estruturas de código */
+.markdown-body .hll { background-color: #2e3748 }
+.markdown-body .c { color: #64748b; font-style: italic } /* Comentários */
+.markdown-body .err { color: #f87171 }                     /* Erros */
+.markdown-body .k { color: #ff79c6; font-weight: bold }   /* Palavras-chave (if, def, return, class) */
+.markdown-body .o { color: #ff79c6 }                     /* Operadores (=, +, ==) */
+.markdown-body .ch { color: #64748b; font-style: italic }
+.markdown-body .cm { color: #64748b; font-style: italic }
+.markdown-body .cp { color: #ff79c6 }
+.markdown-body .cpf { color: #64748b; font-style: italic }
+.markdown-body .c1 { color: #64748b; font-style: italic } /* Comentário de uma linha */
+.markdown-body .cs { color: #64748b; font-style: italic }
+.markdown-body .gd { color: #f87171 }
+.markdown-body .ge { font-style: italic }
+.markdown-body .gr { color: #f87171 }
+.markdown-body .gh { color: #8be9fd; font-weight: bold }
+.markdown-body .gi { color: #50fa7b }
+.markdown-body .go { color: #44475a }
+.markdown-body .gp { color: #ff79c6; font-weight: bold }
+.markdown-body .gs { font-weight: bold }
+.markdown-body .gu { color: #8be9fd; font-weight: bold }
+.markdown-body .gt { color: #f87171 }
+.markdown-body .kc { color: #ff79c6; font-weight: bold }
+.markdown-body .kd { color: #8be9fd; font-style: italic } /* Declarações (const, let, var) */
+.markdown-body .kn { color: #ff79c6; font-weight: bold } /* Imports (from, import) */
+.markdown-body .kp { color: #ff79c6 }
+.markdown-body .kr { color: #ff79c6; font-weight: bold }
+.markdown-body .kt { color: #8be9fd }
+.markdown-body .m { color: #bd93f9 }                     /* Números */
+.markdown-body .s { color: #f1fa8c }                     /* Strings / Textos em aspas */
+.markdown-body .na { color: #50fa7b }
+.markdown-body .nb { color: #8be9fd; font-style: italic } /* Funções nativas (print, len, list) */
+.markdown-body .nc { color: #50fa7b; font-weight: bold } /* Classes */
+.markdown-body .no { color: #bd93f9 }
+.markdown-body .nd { color: #50fa7b }                     /* Decoradores (@app.route) */
+.markdown-body .ni { color: #f8f8f2 }
+.markdown-body .ne { color: #50fa7b; font-weight: bold }
+.markdown-body .nf { color: #50fa7b }                     /* Nomes de Funções criadas */
+.markdown-body .nl { color: #8be9fd; font-style: italic }
+.markdown-body .nn { color: #f8f8f2 }
+.markdown-body .nt { color: #ff79c6 }                     /* Tags HTML (div, h1) */
+.markdown-body .nv { color: #8be9fd; font-style: italic } /* Variáveis */
+
+.markdown-body pre code {
+    background: transparent;
+    padding: 0;
+    color: #e2e8f0;
+}
+.markdown-body blockquote {
+    border-left: 4px solid var(--accent);
+    padding-left: 1rem;
+    color: var(--text-muted);
+    margin: 1.5rem 0;
+    font-style: italic;
+}
+
+.markdown-body img {
+    max-width: 100%;       /* Garante que a imagem nunca passe da largura do texto */
+    height: auto;          /* Mantém a proporção correta de altura sem achatar */
+    border-radius: 8px;    /* Deixa as bordas levemente arredondadas e modernas */
+    margin: 1.5rem auto;   /* Dá um espaçamento confortável em cima e embaixo */
+    display: block;        /* Centraliza a imagem na tela */
+    border: 1px solid var(--border-color); /* Adiciona uma borda fina ao redor da foto */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* Aplica uma sombra leve profissional */
+}
+
+/* Alertas Toast */
+.alert-floating {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+    min-width: 300px;
+    border: 1px solid var(--border-color);
+    border-left: 5px solid transparent;
+}
+.alert-success { border-left-color: var(--success); background-color: var(--bg-card); color: var(--text-main); }
+.alert-danger { border-left-color: var(--danger); background-color: var(--bg-card); color: var(--text-main); }
+.alert-warning { border-left-color: #f59e0b; background-color: var(--bg-card); color: var(--text-main); }

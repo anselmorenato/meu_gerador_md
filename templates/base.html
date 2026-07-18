@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD Studio — Premium Offline Editor</title>
+    
+    <!-- CSS Locais Otimizados -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/easymde.min.css') }}">
+    
+    <!-- SEU NOVO ARQUIVO CSS SEPARADO -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-custom mb-5">
+        <div class="container">
+            <a class="navbar-brand navbar-brand-custom" href="{{ url_for('main.home') }}">
+                <i class="fa-solid fa-cubes text-info me-2"></i>MD<span>Studio</span>
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="btn btn-accent btn-sm px-3 py-2" href="{{ url_for('main.criar') }}">
+                    <i class="fa-solid fa-plus me-1"></i> Criar Documento
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-floating alert-dismissible fade show" role="alert">
+                        <div class="d-flex align-items-center">
+                            {% if category == 'success' %}<i class="fa-solid fa-circle-check text-success me-2 fs-5"></i>
+                            {% elif category == 'danger' %}<i class="fa-solid fa-circle-xmark text-danger me-2 fs-5"></i>
+                            {% else %}<i class="fa-solid fa-triangle-exclamation text-warning me-2 fs-5"></i>{% endif %}
+                            <span>{{ message }}</span>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Scripts Locais -->
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/easymde.min.js') }}"></script>
+    
+    <!-- SEU NOVO ARQUIVO JS SEPARADO (Gerencia alertas e funções do editor) -->
+    <script src="{{ url_for('static', filename='js/editor-init.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

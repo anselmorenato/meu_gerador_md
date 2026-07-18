@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <!-- Coluna Principal da Leitura -->
+    <div class="col-lg-9">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <a href="{{ url_for('main.home') }}" class="btn btn-outline-custom">
+                <i class="fa-solid fa-arrow-left me-2"></i> Voltar ao Painel
+            </a>
+            <div>
+                <a href="{{ url_for('main.editar', filename=filename) }}" class="btn btn-accent px-4">
+                    <i class="fa-solid fa-pen-to-square me-2"></i> Editar Atual
+                </a>
+            </div>
+        </div>
+
+        <div class="card-custom mb-5">
+            <div class="border-bottom border-secondary pb-3 mb-4 d-flex justify-content-between align-items-end">
+                <div>
+                    <h1 class="fw-bold text-white m-0"><i class="fa-regular fa-file-lines text-info me-2"></i> {{ titulo }}</h1>
+                    <small class="text-muted">Criado em: {{ meta.criado_em }} | Última alteração: {{ meta.atualizado_em }}</small>
+                </div>
+                <span class="badge bg-info text-dark fs-6 px-3 py-2 fw-bold">Visualizando Versão v{{ versao_atual }}</span>
+            </div>
+
+            <div class="markdown-body" id="conteudo-documento">
+                {{ conteudo_html | safe }}
+            </div>
+        </div>
+    </div>
+
+    <!-- ⏳ PAINEL LATERAL DE VERSÕES HISTÓRICAS -->
+    <div class="col-lg-3">
+        <h5 class="fw-bold text-uppercase tracking-wider text-muted mb-3" style="font-size:0.85rem;"><i class="fa-solid fa-clock-rotate-left text-warning me-1"></i> Histórico de Versões</h5>
+        <div class="list-group">
+            {% for v in versoes %}
+                <a href="{{ url_for('main.visualizar', filename=filename, v=v.versao_numero) }}" 
+                   class="list-group-item list-group-item-action bg-dark border-secondary text-white py-2 {% if v.versao_numero == versao_atual %}active border-info{% endif %}"
+                   style="background-color: #1c2333 !important; border-color: #2e3748 !important;">
+                    <div class="d-flex w-100 justify-content-between align-items-center">
+                        <strong class="{% if v.versao_numero == versao_atual %}text-info{% else %}text-white{% endif %}">Versão v{{ v.versao_numero }}</strong>
+                    </div>
+                    <small class="text-muted d-block" style="font-size:0.75rem;">{{ v.salvo_em }}</small>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

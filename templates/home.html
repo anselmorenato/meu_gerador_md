@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-md-6">
+        <h2 class="fw-bold h4 text-uppercase tracking-wider" style="color: var(--text-muted); letter-spacing: 1px;">
+            <i class="fa-solid fa-folder-tree me-2 text-info"></i>Seus Arquivos
+        </h2>
+    </div>
+    
+    <!-- 🔍 NOVA ÁREA DE PESQUISA -->
+    <div class="col-md-6">
+        <form method="GET" action="{{ url_for('main.home') }}" class="d-flex gap-2">
+            <div class="input-group">
+                <span class="input-group-text bg-dark border-secondary text-muted" style="background-color: #1a222f !important; border-color: #2e3748 !important;">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" name="busca" class="form-control bg-dark text-white border-secondary" 
+                       placeholder="Pesquisar por título ou conteúdo..." 
+                       value="{{ termo_busca }}" 
+                       style="background-color: #0f141c !important; border-color: #2e3748 !important; box-shadow: none;">
+                
+                {% if termo_busca %}
+                    <!-- Botão para limpar a busca (aparece apenas se houver uma pesquisa ativa) -->
+                    <a href="{{ url_for('main.home') }}" class="btn btn-outline-secondary d-flex align-items-center" style="border-color: #2e3748 !important; color: var(--text-muted);">
+                        <i class="fa-solid fa-xmark"></i>
+                    </a>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-accent px-3">Buscar</button>
+        </form>
+    </div>
+</div>
+
+<div class="card-custom">
+    {% if documentos %}
+        <!-- Mensagem informativa sobre o resultado da busca -->
+        {% if termo_busca %}
+            <div class="alert alert-info py-2 mb-3 bg-opacity-10 text-info border-info" style="font-size: 0.95rem;">
+                <i class="fa-solid fa-circle-info me-2"></i> Exibindo resultados para: <strong>"{{ termo_busca }}"</strong>
+            </div>
+        {% endif %}
+
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle mb-0" style="--bs-table-bg: transparent; --bs-table-hover-bg: #1e293b;">
+                <!-- Procure a seção da tabela do home.html e altere para ler os campos do SQLite -->
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border-color); color: var(--text-muted);">
+                        <th scope="col" class="pb-3 text-start">Título do Documento</th>
+                        <th scope="col" class="pb-3 text-center">Modificado em</th>
+                        <th scope="col" class="pb-3 class-text-center">Versão</th>
+                        <th scope="col" class="pb-3 text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doc in documentos %}
+                        <tr style="border-bottom: 1px solid #2e3748;">
+                            <td class="py-3 text-start">
+                                <div class="d-flex align-items-center">
+                                    <div class="p-2 rounded bg-opacity-10 bg-info text-info me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background-color: rgba(56, 189, 248, 0.1);">
+                                        <i class="fa-brands fa-markdown fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <!-- Exibe o Título do banco ao invés do nome técnico do arquivo -->
+                                        <a href="{{ url_for('main.visualizar', filename=doc.arquivo_nome) }}" class="fs-5 fw-semibold text-white text-decoration-none d-block">
+                                            {{ doc.titulo_exibicao }}
+                                        </a>
+                                        <small class="text-muted" style="font-size:0.75rem;">Físico: {{ doc.arquivo_nome }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 text-center text-muted small">{{ doc.atualizado_em }}</td>
+                            <td class="py-3 text-center"><span class="badge bg-secondary">v{{ doc.versions_count }}</span></td>
+                            <td class="py-3 text-end">
+                                <a href="{{ url_for('main.visualizar', filename=doc.arquivo_nome) }}" class="btn btn-outline-info btn-sm me-2 px-3" style="border-color: #2e3748;">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                                <a href="{{ url_for('main.editar', filename=doc.arquivo_nome) }}" class="btn btn-outline-custom btn-sm me-2 px-3">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                                <a href="{{ url_for('main.deletar', filename=doc.arquivo_nome) }}" class="btn btn-outline-danger btn-sm px-3" style="border: 1px solid rgba(248, 113, 113, 0.2);" onclick="return confirm('Tem certeza que deseja deletar este documento e histórico?')">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <div class="mb-4 text-muted" style="font-size: 4rem;">
+                <i class="fa-solid fa-magnifying-glass-blur opacity-20 text-secondary"></i>
+            </div>
+            {% if termo_busca %}
+                <h4 class="fw-bold text-white">Nenhum resultado encontrado</h4>
+                <p class="text-muted mx-auto" style="max-width: 400px;">Não encontramos nenhum arquivo que contenha ou seja nomeado como "{{ termo_busca }}".</p>
+                <a class="btn btn-outline-custom mt-2" href="{{ url_for('main.home') }}">Limpar Filtros</a>
+            {% else %}
+                <h4 class="fw-bold text-white">Nenhum repositório de Markdown ativo</h4>
+                <p class="text-muted mx-auto" style="max-width: 400px;">Crie um novo arquivo formatado para começar a organizar sua estrutura de documentação.</p>
+                <a class="btn btn-accent mt-3 px-4" href="{{ url_for('main.criar') }}">
+                    <i class="fa-solid fa-file-circle-plus me-1"></i> Começar Agora
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
