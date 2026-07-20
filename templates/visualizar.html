@@ -1,50 +1,142 @@
-{% extends 'base.html' %}
+{% if not is_htmx %}
+    {% extends 'base.html' %}
+    
+    {% block navbar_actions %}
+        <!-- Diferenciação Visual: Editar ganha o tom secundário e Criar ganha o destaque primário -->
+        <a class="btn btn-secondary-custom btn-sm px-3 py-2" style="cursor:pointer;"
+           hx-get="{{ url_for('main.editar', filename=filename) }}" hx-target="#main-content" hx-push-url="true">
+            <i class="fa-solid fa-pencil me-1"></i> Editar Atual
+        </a>
+        <a class="btn btn-accent btn-sm px-3 py-2" style="cursor:pointer;"
+           hx-get="{{ url_for('main.criar') }}" hx-target="#main-content" hx-push-url="true">
+            <i class="fa-solid fa-plus me-1"></i> Criar Documento
+        </a>
+    {% endblock %}
+{% endif %}
+
+{% block htmx_navbar_actions %}
+    <a class="btn btn-secondary-custom btn-sm px-3 py-2" style="cursor:pointer;"
+       hx-get="{{ url_for('main.editar', filename=filename) }}" hx-target="#main-content" hx-push-url="true">
+        <i class="fa-solid fa-pencil me-1"></i> Editar Atual
+    </a>
+    <a class="btn btn-accent btn-sm px-3 py-2" style="cursor:pointer;"
+       hx-get="{{ url_for('main.criar') }}" hx-target="#main-content" hx-push-url="true">
+        <i class="fa-solid fa-plus me-1"></i> Criar Documento
+    </a>
+{% endblock %}
 
 {% block content %}
-<div class="row">
-    <!-- Coluna Principal da Leitura -->
-    <div class="col-lg-9">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <a href="{{ url_for('main.home') }}" class="btn btn-outline-custom">
-                <i class="fa-solid fa-arrow-left me-2"></i> Voltar ao Painel
-            </a>
-            <div>
-                <a href="{{ url_for('main.editar', filename=filename) }}" class="btn btn-accent px-4">
-                    <i class="fa-solid fa-pen-to-square me-2"></i> Editar Atual
-                </a>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <!-- Links sutis integrados ao menu de retorno -->
+    <a hx-get="{{ url_for('main.home') }}" hx-target="#main-content" hx-push-url="true" 
+       class="text-decoration-none text-muted small hover-link-back" style="cursor:pointer;">
+        <i class="fa-solid fa-arrow-left long me-1"></i> Voltar ao painel
+    </a>
+    
+    <!-- ⚙️ BOTÃO DO MODO FOCO RETRÁTIL -->
+    <button class="btn-modo-foco" id="toggle-foco-view">
+        <i class="fa-solid fa-expand me-1"></i> <span id="txt-foco">Modo Foco</span>
+    </button>
+</div>
+
+<div class="row g-0">
+    
+    <!-- 🧭 COLUNA 1: ÍNDICE FLUIDO (ESQUERDA) -->
+    <div class="col-grid-esquerda mb-4" id="col-esquerda">
+        <div class="sticky-top" style="top: 20px; z-index: 10;">
+            <h5 class="fw-bold text-uppercase tracking-wider text-muted mb-3" style="font-size:0.7rem; letter-spacing: 0.8px;">
+                <i class="fa-solid fa-list-ul text-info me-1" style="font-size: 0.8rem;"></i> Índice
+            </h5>
+            <div class="sumario-lateral-container">
+                {{ sumario_html | safe }}
             </div>
         </div>
+    </div>
 
-        <div class="card-custom mb-5">
-            <div class="border-bottom border-secondary pb-3 mb-4 d-flex justify-content-between align-items-end">
-                <div>
-                    <h1 class="fw-bold text-white m-0"><i class="fa-regular fa-file-lines text-info me-2"></i> {{ titulo }}</h1>
-                    <small class="text-muted">Criado em: {{ meta.criado_em }} | Última alteração: {{ meta.atualizado_em }}</small>
+    <!-- 📄 COLUNA 2: TEXTO CENTRAL (RESPIRO MÁXIMO E ELEMENTOS VISUAIS) -->
+    <div class="col-grid-centro" id="col-centro">
+        <div class="card-custom-viewer mb-5">
+            <div class="border-bottom border-secondary pb-3 mb-4">
+                <h1 class="fw-bold text-white m-0" style="font-size: 1.85rem; letter-spacing: -0.5px;">{{ titulo }}</h1>
+                
+                <!-- Composição Limpa de Autor e Data substituindo metadados YAML brutos -->
+                <div class="text-muted mt-2 small" style="font-size: 0.82rem;">
+                    Por <span class="text-light fw-medium">{% if meta_yaml.autor %}{{ meta_yaml.autor }}{% else %}Autor Independente{% endif %}</span> 
+                    • {{ meta.atualizado_em.split()[0] if meta.atualizado_em else 'Recentemente' }}
                 </div>
-                <span class="badge bg-info text-dark fs-6 px-3 py-2 fw-bold">Visualizando Versão v{{ versao_atual }}</span>
+                
+                <!-- Pílulas de Tags organizadas graficamente -->
+                {% if meta_yaml.tags %}
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        {% for tag in meta_yaml.tags %}
+                            <span class="badge-tag">#{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
 
+            <!-- Área de Leitura Otimizada Inter -->
             <div class="markdown-body" id="conteudo-documento">
                 {{ conteudo_html | safe }}
             </div>
         </div>
     </div>
 
-    <!-- ⏳ PAINEL LATERAL DE VERSÕES HISTÓRICAS -->
-    <div class="col-lg-3">
-        <h5 class="fw-bold text-uppercase tracking-wider text-muted mb-3" style="font-size:0.85rem;"><i class="fa-solid fa-clock-rotate-left text-warning me-1"></i> Histórico de Versões</h5>
-        <div class="list-group">
-            {% for v in versoes %}
-                <a href="{{ url_for('main.visualizar', filename=filename, v=v.versao_numero) }}" 
-                   class="list-group-item list-group-item-action bg-dark border-secondary text-white py-2 {% if v.versao_numero == versao_atual %}active border-info{% endif %}"
-                   style="background-color: #1c2333 !important; border-color: #2e3748 !important;">
-                    <div class="d-flex w-100 justify-content-between align-items-center">
-                        <strong class="{% if v.versao_numero == versao_atual %}text-info{% else %}text-white{% endif %}">Versão v{{ v.versao_numero }}</strong>
-                    </div>
-                    <small class="text-muted d-block" style="font-size:0.75rem;">{{ v.salvo_em }}</small>
-                </a>
-            {% endfor %}
+    <!-- ⏳ COLUNA 3: LINHA DO TEMPO DISCRETA (DIREITA) -->
+    <div class="col-grid-direita" id="col-direita">
+        <div class="sticky-top" style="top: 20px; z-index: 10;">
+            <h5 class="fw-bold text-uppercase tracking-wider text-muted mb-3" style="font-size:0.7rem; letter-spacing: 0.8px;">
+                <i class="fa-solid fa-clock-rotate-left text-warning me-1" style="font-size: 0.8rem;"></i> Histórico
+            </h5>
+            <div class="timeline-minimal">
+                {% for v in versoes %}
+                    <a hx-get="{{ url_for('main.visualizar', filename=filename, v=v.versao_numero) }}" 
+                       hx-target="#main-content" style="cursor:pointer;"
+                       class="timeline-item-link {% if v.versao_numero == versao_atual %}active-version{% endif %}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Versão v{{ v.versao_numero }}</span>
+                        </div>
+                        <span class="text-muted d-block opacity-60" style="font-size:0.68rem; margin-top: 1px;">{{ v.salvo_em }}</span>
+                    </a>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>
+
+<!-- 🎮 SCRIPT DO MODO FOCO INTERNO -->
+<script>
+(function() {
+    const btn = document.getElementById('toggle-foco-view');
+    const txt = document.getElementById('txt-foco');
+    const colEsq = document.getElementById('col-esquerda');
+    const colDir = document.getElementById('col-direita');
+    const colCen = document.getElementById('col-centro');
+    
+    if(!btn) return;
+
+    btn.addEventListener('click', function() {
+        const estaAtivo = colEsq.classList.contains('col-escondida');
+        
+        if (!estaAtivo) {
+            // Liga o Modo Foco: Encolhe as laterais e expande o centro
+            colEsq.classList.add('col-escondida');
+            colDir.classList.add('col-escondida');
+            colCen.classList.add('centro-foco-total');
+            btn.innerHTML = '<i class="fa-solid fa-compress me-1"></i> <span>Sair do Foco</span>';
+        } else {
+            // Desliga o Modo Foco: Restaura as colunas
+            colEsq.classList.remove('col-escondida');
+            colDir.classList.remove('col-escondida');
+            colCen.classList.remove('centro-foco-total');
+            btn.innerHTML = '<i class="fa-solid fa-expand me-1"></i> <span>Modo Foco</span>';
+        }
+    });
+})();
+</script>
+{% endblock %}
+
+{% block htmx_content %}
+    {% set display_content = self.content() %}
+    {{ display_content | safe }}
 {% endblock %}

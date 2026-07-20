@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% if not is_htmx %}{% extends 'base.html' %}{% endif %}
 
 {% block content %}
 <div class="card-custom mb-5">
@@ -50,6 +50,8 @@
 {% block scripts %}
 <script>
     // Executa a função que está salva no arquivo javascript externo
-    const easyMDE = inicializarEditorMarkdown("{{ titulo }}");
+    //const easyMDE = inicializarEditorMarkdown("{{ titulo }}");
+     // Executa imediatamente ao carregar via HTMX
+    inicializarEditorMarkdown("{{ titulo_exibicao }}");
 </script>
 {% endblock %}
