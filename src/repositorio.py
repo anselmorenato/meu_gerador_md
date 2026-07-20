@@ -1,10 +1,28 @@
 import os
 import sqlite3
 from datetime import datetime
-from markdown import markdown as md_converter
+from markdown import Markdown, markdown as md_converter
+
+
 
 class MarkdownRepository:
+    
+    # 🔒 Variável privada de classe que guardará a instância única global
+    _instancia = None
+    
+    def __new__(cls, *args, **kwargs):
+        """Sobrescreve a criação do objeto para garantir o padrão Singleton."""
+        if cls._instancia is None:
+            # Se não existe instância na memória, cria uma nova
+            cls._instancia = super(MarkdownRepository, cls).__new__(cls)
+            cls._instancia._inicializado = False
+        return cls._instancia
+    
     def __init__(self):
+        # ⚠️ Impede que o init seja executado múltiplas vezes ao chamar o Singleton
+        if getattr(self, '_inicializado', False):
+            return
+            
         self.docs_dir = os.path.join(
             os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
             'documentos'
@@ -15,11 +33,15 @@ class MarkdownRepository:
         )
         if not os.path.exists(self.docs_dir):
             os.makedirs(self.docs_dir)
+            
         self._criar_tabelas()
+        
+        # Marca como inicializado para travar futuros inits redundantes
+        self._inicializado = True
 
     def _get_conexao(self):
         conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row  # Permite acessar colunas pelo nome
+        conn.row_factory = sqlite3.Row
         return conn
 
     def _criar_tabelas(self):
@@ -152,5 +174,44 @@ class MarkdownRepository:
         return True
 
     def converter_para_html(self, conteudo_bruto):
-        extensoes_actives = ['tables', 'pymdownx.emoji', 'pymdownx.tasklist', 'pymdownx.superfences', 'pymdownx.inlinehilite']
-        return md_converter(conteudo_bruto, extensions=extensoes_actives)
+        """Compila o Markdown extraindo metadados YAML (front-matter) e gerando o TOC."""
+        
+        extensoes_ativas = [
+            'tables', 
+            'pymdownx.emoji', 
+            'pymdownx.tasklist', 
+            'pymdownx.superfences', 
+            'pymdownx.inlinehilite',
+            'wikilinks',
+            'toc',
+            'markdown.extensions.meta' # ⬅️ ADICIONE ESTA EXTENSÃO NATIVA AQUI
+        ]
+        
+        configuracoes_extensoes = {
+            'wikilinks': {
+                'base_url': '/visualizar/',
+                'end_url': '.md',
+                'build_url': lambda label, base, end: f"{base}{label.strip().replace(' ', '_').lower()}{end}"
+            },
+            'toc': {
+                'baselevel': 1,
+                'marker': '[TOC]'
+            }
+        }
+        
+        #from markdown import Markdown
+        md = Markdown(extensions=extensoes_ativas, extension_configs=configuracoes_extensoes)
+        
+        conteudo_html = md.convert(conteudo_bruto)
+        sumario_html = md.toc
+        
+        # 🎣 Captura os metadados do front-matter processados pela extensão
+        # Os valores retornam sempre como listas no Python-Markdown, por isso tratamos abaixo:
+        meta_yaml = getattr(md, 'Meta', {})
+        
+        metadados_tratados = {
+            'autor': meta_yaml.get('autor', [''])[0] or meta_yaml.get('author', [''])[0],
+            'tags': [t.strip() for t in meta_yaml.get('tags', [''])[0].split(',')] if meta_yaml.get('tags') else []
+        }
+        
+        return conteudo_html, sumario_html, metadados_tratados

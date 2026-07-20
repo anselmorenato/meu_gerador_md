@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% if not is_htmx %}{% extends 'base.html' %}{% endif %}
 
 {% block content %}
 <div class="row mb-4 align-items-center">
@@ -15,10 +15,14 @@
                 <span class="input-group-text bg-dark border-secondary text-muted" style="background-color: #1a222f !important; border-color: #2e3748 !important;">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </span>
+                <!-- Procure a tag <input name="busca" ...> no seu home.html e altere para ficar assim: -->
                 <input type="text" name="busca" class="form-control bg-dark text-white border-secondary" 
-                       placeholder="Pesquisar por título ou conteúdo..." 
-                       value="{{ termo_busca }}" 
-                       style="background-color: #0f141c !important; border-color: #2e3748 !important; box-shadow: none;">
+                    placeholder="Pesquisar por título ou conteúdo..." 
+                    value="{{ termo_busca }}" 
+                    hx-get="{{ url_for('main.home') }}" 
+                    hx-trigger="keyup changed delay:300ms" 
+                    hx-target="#main-content"
+                    style="background-color: #0f141c !important; border-color: #2e3748 !important; box-shadow: none;">
                 
                 {% if termo_busca %}
                     <!-- Botão para limpar a busca (aparece apenas se houver uma pesquisa ativa) -->
